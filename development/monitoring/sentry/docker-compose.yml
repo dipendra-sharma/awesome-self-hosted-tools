@@ -1,0 +1,84 @@
+# Sentry Self-Hosted - Error Tracking and Performance Monitoring
+# Note: This is a simplified configuration. For production, use the official sentry/self-hosted repository
+
+services:
+  sentry-redis:
+    image: redis:alpine
+    container_name: sentry-redis
+    restart: unless-stopped
+
+  sentry-postgres:
+    image: postgres:14-alpine
+    container_name: sentry-postgres
+    environment:
+      POSTGRES_USER: sentry
+      POSTGRES_PASSWORD: sentry_pass
+      POSTGRES_DB: sentry
+    volumes:
+      - sentry-postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  sentry-web:
+    image: getsentry/sentry:latest
+    container_name: sentry-web
+    ports:
+      - "8632:9000"
+    environment:
+      SENTRY_SECRET_KEY: change_this_to_a_random_secret_key_minimum_32_chars
+      SENTRY_POSTGRES_HOST: sentry-postgres
+      SENTRY_POSTGRES_PORT: 5432
+      SENTRY_DB_NAME: sentry
+      SENTRY_DB_USER: sentry
+      SENTRY_DB_PASSWORD: sentry_pass
+      SENTRY_REDIS_HOST: sentry-redis
+      SENTRY_REDIS_PORT: 6379
+      SENTRY_WEB_HOST: 0.0.0.0
+      SENTRY_WEB_PORT: 9000
+    depends_on:
+      - sentry-postgres
+      - sentry-redis
+    restart: unless-stopped
+    command: ["sentry", "run", "web"]
+
+  sentry-worker:
+    image: getsentry/sentry:latest
+    container_name: sentry-worker
+    environment:
+      SENTRY_SECRET_KEY: change_this_to_a_random_secret_key_minimum_32_chars
+      SENTRY_POSTGRES_HOST: sentry-postgres
+      SENTRY_POSTGRES_PORT: 5432
+      SENTRY_DB_NAME: sentry
+      SENTRY_DB_USER: sentry
+      SENTRY_DB_PASSWORD: sentry_pass
+      SENTRY_REDIS_HOST: sentry-redis
+      SENTRY_REDIS_PORT: 6379
+    depends_on:
+      - sentry-postgres
+      - sentry-redis
+    restart: unless-stopped
+    command: ["sentry", "run", "worker"]
+
+  sentry-cron:
+    image: getsentry/sentry:latest
+    container_name: sentry-cron
+    environment:
+      SENTRY_SECRET_KEY: change_this_to_a_random_secret_key_minimum_32_chars
+      SENTRY_POSTGRES_HOST: sentry-postgres
+      SENTRY_POSTGRES_PORT: 5432
+      SENTRY_DB_NAME: sentry
+      SENTRY_DB_USER: sentry
+      SENTRY_DB_PASSWORD: sentry_pass
+      SENTRY_REDIS_HOST: sentry-redis
+      SENTRY_REDIS_PORT: 6379
+    depends_on:
+      - sentry-postgres
+      - sentry-redis
+    restart: unless-stopped
+    command: ["sentry", "run", "cron"]
+
+volumes:
+  sentry-postgres-data:
+
+# IMPORTANT: This is a simplified setup for testing purposes.
+# For production deployment, please use the official Sentry self-hosted repository:
+# https://github.com/getsentry/self-hosted

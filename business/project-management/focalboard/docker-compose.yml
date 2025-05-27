@@ -1,0 +1,15 @@
+services:
+  focalboard:
+    image: mattermost/focalboard:latest
+    container_name: focalboard
+    ports:
+      - "8401:8000"
+    volumes:
+      - focalboard-data:/opt/focalboard/data
+    environment:
+      - VIRTUAL_HOST=focalboard.local
+      - VIRTUAL_PORT=8000
+    restart: unless-stopped
+
+volumes:
+  focalboard-data:

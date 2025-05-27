@@ -1,0 +1,27 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    ports:
+      - "8606:80"
+    environment:
+      - WEBSOCKET_ENABLED=true
+      - SENDS_ALLOWED=true
+      - PASSWORD_ITERATIONS=100000
+      - SIGNUPS_ALLOWED=true
+      - SIGNUPS_VERIFY=false
+      - SIGNUPS_DOMAINS_WHITELIST=
+      - ADMIN_TOKEN=your_admin_token_here_change_this
+      - DOMAIN=http://localhost:8606
+      - SMTP_HOST=
+      - SMTP_FROM=
+      - SMTP_PORT=587
+      - SMTP_SECURITY=starttls
+      - SMTP_USERNAME=
+      - SMTP_PASSWORD=
+    volumes:
+      - vaultwarden-data:/data
+    restart: unless-stopped
+
+volumes:
+  vaultwarden-data:

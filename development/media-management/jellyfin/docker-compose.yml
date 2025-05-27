@@ -1,0 +1,34 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    ports:
+      - "8607:8096"   # HTTP web interface
+      - "8608:8920"   # HTTPS web interface (optional)
+      - "7359:7359/udp"  # Client discovery (optional)
+      - "1900:1900/udp"  # DLNA discovery (optional)
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+    volumes:
+      - jellyfin-config:/config
+      - jellyfin-cache:/cache
+      # Mount your media directories
+      - jellyfin-movies:/media/movies
+      - jellyfin-tv:/media/tv
+      - jellyfin-music:/media/music
+      - jellyfin-photos:/media/photos
+    restart: unless-stopped
+    devices:
+      # Optional: Hardware acceleration
+      # - /dev/dri:/dev/dri  # Intel/AMD GPU
+      # - /dev/dvb:/dev/dvb  # TV tuners
+
+volumes:
+  jellyfin-config:
+  jellyfin-cache:
+  jellyfin-movies:
+  jellyfin-tv:
+  jellyfin-music:
+  jellyfin-photos:

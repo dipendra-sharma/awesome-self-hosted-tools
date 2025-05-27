@@ -1,0 +1,89 @@
+# Mailcow requires a complex setup with many services
+# This is a simplified version - for production use, 
+# please use the official mailcow-dockerized repository
+
+services:
+  mailcow-mariadb:
+    image: mariadb:10.11
+    container_name: mailcow-mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=mailcow_root
+      - MYSQL_DATABASE=mailcow
+      - MYSQL_USER=mailcow
+      - MYSQL_PASSWORD=mailcow_pass
+    volumes:
+      - mailcow-mysql:/var/lib/mysql
+    restart: always
+
+  mailcow-redis:
+    image: redis:alpine
+    container_name: mailcow-redis
+    restart: always
+    command: redis-server --appendonly yes
+
+  mailcow-postfix:
+    image: mailcow/postfix:latest
+    container_name: mailcow-postfix
+    hostname: mail.example.com
+    depends_on:
+      - mailcow-mariadb
+      - mailcow-redis
+    environment:
+      - MYSQL_HOST=mailcow-mariadb
+      - MYSQL_USER=mailcow
+      - MYSQL_PASS=mailcow_pass
+      - MYSQL_DATABASE=mailcow
+      - REDIS_HOST=mailcow-redis
+    volumes:
+      - mailcow-mail:/var/vmail
+    ports:
+      - "8502:25"   # SMTP
+      - "8503:587"  # Submission
+      - "8504:465"  # SMTPS
+    restart: always
+
+  mailcow-dovecot:
+    image: mailcow/dovecot:latest
+    container_name: mailcow-dovecot
+    depends_on:
+      - mailcow-mariadb
+      - mailcow-redis
+    environment:
+      - MYSQL_HOST=mailcow-mariadb
+      - MYSQL_USER=mailcow
+      - MYSQL_PASS=mailcow_pass
+      - MYSQL_DATABASE=mailcow
+      - REDIS_HOST=mailcow-redis
+    volumes:
+      - mailcow-mail:/var/vmail
+    ports:
+      - "8505:143"  # IMAP
+      - "8506:993"  # IMAPS
+      - "8507:110"  # POP3
+      - "8508:995"  # POP3S
+    restart: always
+
+  mailcow-web:
+    image: mailcow/web:latest
+    container_name: mailcow-web
+    depends_on:
+      - mailcow-mariadb
+      - mailcow-redis
+    environment:
+      - MYSQL_HOST=mailcow-mariadb
+      - MYSQL_USER=mailcow
+      - MYSQL_PASS=mailcow_pass
+      - MYSQL_DATABASE=mailcow
+      - REDIS_HOST=mailcow-redis
+    ports:
+      - "8509:80"   # Web interface
+      - "8510:443"  # HTTPS
+    restart: always
+
+volumes:
+  mailcow-mysql:
+  mailcow-mail:
+
+# NOTE: This is a simplified configuration for testing purposes.
+# For production deployment, please use the official mailcow-dockerized
+# repository which includes all necessary components and security configurations.

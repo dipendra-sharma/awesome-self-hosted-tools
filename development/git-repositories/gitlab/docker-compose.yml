@@ -1,0 +1,33 @@
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab
+    hostname: gitlab.local
+    ports:
+      - "8511:80"    # HTTP
+      - "8512:443"   # HTTPS
+      - "8513:22"    # SSH
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://localhost:8511'
+        gitlab_rails['gitlab_shell_ssh_port'] = 8513
+        # Disable Let's Encrypt since we're running locally
+        letsencrypt['enable'] = false
+        # Configure GitLab to use less memory for smaller deployments
+        postgresql['shared_buffers'] = "256MB"
+        postgresql['max_worker_processes'] = 8
+        sidekiq['max_concurrency'] = 25
+        unicorn['worker_processes'] = 2
+        unicorn['worker_memory_limit_min'] = "200 * 1 << 20"
+        unicorn['worker_memory_limit_max'] = "300 * 1 << 20"
+    volumes:
+      - gitlab-config:/etc/gitlab
+      - gitlab-logs:/var/log/gitlab
+      - gitlab-data:/var/opt/gitlab
+    restart: always
+    shm_size: '256m'
+
+volumes:
+  gitlab-config:
+  gitlab-logs:
+  gitlab-data:

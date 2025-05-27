@@ -1,0 +1,38 @@
+services:
+  playsms-db:
+    image: mysql:8.0
+    container_name: playsms-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=playsms_root
+      - MYSQL_DATABASE=playsms
+      - MYSQL_USER=playsms
+      - MYSQL_PASSWORD=playsms_pass
+    volumes:
+      - playsms-db:/var/lib/mysql
+    restart: always
+
+  playsms:
+    image: playsms/playsms:latest
+    container_name: playsms
+    ports:
+      - "8407:80"
+    depends_on:
+      - playsms-db
+    environment:
+      - PLAYSMS_DB_HOST=playsms-db
+      - PLAYSMS_DB_PORT=3306
+      - PLAYSMS_DB_NAME=playsms
+      - PLAYSMS_DB_USER=playsms
+      - PLAYSMS_DB_PASS=playsms_pass
+      - PLAYSMS_WEB_TITLE=PlaySMS
+      - PLAYSMS_ADMIN_USER=admin
+      - PLAYSMS_ADMIN_PASS=admin
+    volumes:
+      - playsms-data:/var/www/html/storage
+      - playsms-logs:/var/log/playsms
+    restart: always
+
+volumes:
+  playsms-db:
+  playsms-data:
+  playsms-logs:

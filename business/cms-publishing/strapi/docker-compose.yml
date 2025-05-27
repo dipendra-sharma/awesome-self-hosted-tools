@@ -1,0 +1,42 @@
+services:
+  strapi-db:
+    image: postgres:16-alpine
+    container_name: strapi-db
+    environment:
+      POSTGRES_DB: strapi
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: strapi_pass
+    volumes:
+      - strapi-db:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  strapi:
+    image: strapi/strapi:latest
+    container_name: strapi
+    ports:
+      - "8627:1337"
+    depends_on:
+      - strapi-db
+    environment:
+      - NODE_ENV=production
+      - DATABASE_CLIENT=postgres
+      - DATABASE_HOST=strapi-db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=strapi
+      - DATABASE_USERNAME=strapi
+      - DATABASE_PASSWORD=strapi_pass
+      - DATABASE_SSL=false
+      - JWT_SECRET=your_jwt_secret_here_change_this
+      - ADMIN_JWT_SECRET=your_admin_jwt_secret_here_change_this
+      - APP_KEYS=your_app_key1,your_app_key2,your_app_key3,your_app_key4
+      - API_TOKEN_SALT=your_api_token_salt_here_change_this
+      - TRANSFER_TOKEN_SALT=your_transfer_token_salt_here_change_this
+    volumes:
+      - strapi-app:/opt/app
+      - strapi-uploads:/opt/app/public/uploads
+    restart: unless-stopped
+
+volumes:
+  strapi-db:
+  strapi-app:
+  strapi-uploads:

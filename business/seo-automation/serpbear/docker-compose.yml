@@ -1,0 +1,20 @@
+services:
+  serpbear:
+    image: towfiqi/serpbear:latest
+    container_name: serpbear
+    ports:
+      - "8625:3000"
+    environment:
+      - DATABASE_URL=file:./data/database.db
+      - NEXTAUTH_SECRET=your_nextauth_secret_here_change_this
+      - NEXTAUTH_URL=http://localhost:8625
+      - SECRET=your_secret_here_change_this
+      - SERP_API_KEY=
+      - SCRAPINGANT_API_KEY=
+      - RAPID_API_KEY=
+    volumes:
+      - serpbear-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  serpbear-data:

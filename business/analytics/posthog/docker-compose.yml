@@ -1,0 +1,68 @@
+services:
+  posthog-db:
+    image: postgres:16-alpine
+    container_name: posthog-db
+    environment:
+      - POSTGRES_DB=posthog
+      - POSTGRES_USER=posthog
+      - POSTGRES_PASSWORD=posthog_pass
+    volumes:
+      - posthog-db:/var/lib/postgresql/data
+    restart: always
+
+  posthog-redis:
+    image: redis:alpine
+    container_name: posthog-redis
+    restart: always
+
+  posthog-clickhouse:
+    image: clickhouse/clickhouse-server:23.8-alpine
+    container_name: posthog-clickhouse
+    volumes:
+      - posthog-clickhouse:/var/lib/clickhouse
+    restart: always
+    environment:
+      - CLICKHOUSE_DB=posthog
+
+  posthog:
+    image: posthog/posthog:latest
+    container_name: posthog
+    ports:
+      - "8519:8000"
+    depends_on:
+      - posthog-db
+      - posthog-redis
+      - posthog-clickhouse
+    environment:
+      - DATABASE_URL=postgres://posthog:posthog_pass@posthog-db:5432/posthog
+      - REDIS_URL=redis://posthog-redis:6379
+      - CLICKHOUSE_HOST=posthog-clickhouse
+      - CLICKHOUSE_DATABASE=posthog
+      - SECRET_KEY=change_this_secret_key_to_something_random
+      - SITE_URL=http://localhost:8519
+      - IS_BEHIND_PROXY=false
+      - DISABLE_SECURE_SSL_REDIRECT=true
+    volumes:
+      - posthog-staticfiles:/code/staticfiles
+    restart: always
+
+  posthog-worker:
+    image: posthog/posthog:latest
+    container_name: posthog-worker
+    depends_on:
+      - posthog-db
+      - posthog-redis
+      - posthog-clickhouse
+    environment:
+      - DATABASE_URL=postgres://posthog:posthog_pass@posthog-db:5432/posthog
+      - REDIS_URL=redis://posthog-redis:6379
+      - CLICKHOUSE_HOST=posthog-clickhouse
+      - CLICKHOUSE_DATABASE=posthog
+      - SECRET_KEY=change_this_secret_key_to_something_random
+    command: ./bin/docker-worker-celery --with-scheduler
+    restart: always
+
+volumes:
+  posthog-db:
+  posthog-clickhouse:
+  posthog-staticfiles:

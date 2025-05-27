@@ -1,0 +1,59 @@
+services:
+  sendportal-db:
+    image: mysql:8.0
+    container_name: sendportal-db
+    environment:
+      MYSQL_ROOT_PASSWORD: sendportal_root
+      MYSQL_DATABASE: sendportal
+      MYSQL_USER: sendportal
+      MYSQL_PASSWORD: sendportal_pass
+    volumes:
+      - sendportal-db:/var/lib/mysql
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+
+  sendportal-redis:
+    image: redis:alpine
+    container_name: sendportal-redis
+    restart: unless-stopped
+
+  sendportal:
+    image: mettle/sendportal:latest
+    container_name: sendportal
+    ports:
+      - "8628:80"
+    depends_on:
+      - sendportal-db
+      - sendportal-redis
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_KEY=base64:your_app_key_here_change_this
+      - APP_URL=http://localhost:8628
+      - DB_CONNECTION=mysql
+      - DB_HOST=sendportal-db
+      - DB_PORT=3306
+      - DB_DATABASE=sendportal
+      - DB_USERNAME=sendportal
+      - DB_PASSWORD=sendportal_pass
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+      - REDIS_HOST=sendportal-redis
+      - REDIS_PASSWORD=null
+      - REDIS_PORT=6379
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=
+      - MAIL_PORT=587
+      - MAIL_USERNAME=
+      - MAIL_PASSWORD=
+      - MAIL_ENCRYPTION=tls
+      - MAIL_FROM_ADDRESS=noreply@sendportal.local
+      - MAIL_FROM_NAME=SendPortal
+    volumes:
+      - sendportal-storage:/var/www/html/storage
+    restart: unless-stopped
+
+volumes:
+  sendportal-db:
+  sendportal-storage:

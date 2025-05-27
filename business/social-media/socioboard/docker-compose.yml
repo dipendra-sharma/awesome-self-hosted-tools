@@ -1,0 +1,44 @@
+services:
+  socioboard-db:
+    image: mysql:8.0
+    container_name: socioboard-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=socioboard_root
+      - MYSQL_DATABASE=socioboard
+      - MYSQL_USER=socioboard
+      - MYSQL_PASSWORD=socioboard_pass
+    volumes:
+      - socioboard-db:/var/lib/mysql
+    restart: always
+
+  socioboard-redis:
+    image: redis:alpine
+    container_name: socioboard-redis
+    restart: always
+
+  socioboard:
+    image: dockerdrivemecrazy/socioboard:latest
+    container_name: socioboard
+    ports:
+      - "8405:3000"
+    depends_on:
+      - socioboard-db
+      - socioboard-redis
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=socioboard-db
+      - DB_PORT=3306
+      - DB_NAME=socioboard
+      - DB_USER=socioboard
+      - DB_PASSWORD=socioboard_pass
+      - REDIS_HOST=socioboard-redis
+      - REDIS_PORT=6379
+      - SESSION_SECRET=your_session_secret_here
+      - JWT_SECRET=your_jwt_secret_here
+    volumes:
+      - socioboard-data:/app/uploads
+    restart: always
+
+volumes:
+  socioboard-db:
+  socioboard-data:

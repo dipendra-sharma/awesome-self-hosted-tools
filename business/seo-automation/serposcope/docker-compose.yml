@@ -1,0 +1,33 @@
+services:
+  serposcope-db:
+    image: mysql:8.0
+    container_name: serposcope-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=serposcope_root
+      - MYSQL_DATABASE=serposcope
+      - MYSQL_USER=serposcope
+      - MYSQL_PASSWORD=serposcope_pass
+    volumes:
+      - serposcope-db:/var/lib/mysql
+    restart: always
+
+  serposcope:
+    image: bpodwinski/serposcope:latest
+    container_name: serposcope
+    ports:
+      - "8402:7134"
+    depends_on:
+      - serposcope-db
+    environment:
+      - DB_HOST=serposcope-db
+      - DB_PORT=3306
+      - DB_NAME=serposcope
+      - DB_USER=serposcope
+      - DB_PASSWORD=serposcope_pass
+    volumes:
+      - serposcope-config:/opt/serposcope/var
+    restart: always
+
+volumes:
+  serposcope-db:
+  serposcope-config:

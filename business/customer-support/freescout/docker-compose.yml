@@ -1,0 +1,41 @@
+services:
+  freescout-app:
+    image: tiredofit/freescout:latest
+    container_name: freescout-app
+    depends_on:
+      - freescout-db
+    ports:
+      - "8303:80"
+    volumes:
+      - freescout_data:/data
+      - freescout_logs:/www/logs
+    environment:
+      - DB_HOST=freescout-db
+      - DB_NAME=freescout
+      - DB_USER=freescout
+      - DB_PASS=freescoutpass
+      - SITE_URL=http://localhost:8303
+      - ADMIN_EMAIL=admin@example.com
+      - ADMIN_PASS=freescoutpass
+      - SETUP_TYPE=AUTO
+      - ENABLE_SSL_PROXY=FALSE
+      - DISPLAY_ERRORS=FALSE
+      - TIMEZONE=UTC
+    restart: always
+
+  freescout-db:
+    image: mariadb:10.11
+    container_name: freescout-db
+    volumes:
+      - freescout_db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=freescout
+      - MYSQL_USER=freescout
+      - MYSQL_PASSWORD=freescoutpass
+    restart: always
+
+volumes:
+  freescout_data:
+  freescout_logs:
+  freescout_db:

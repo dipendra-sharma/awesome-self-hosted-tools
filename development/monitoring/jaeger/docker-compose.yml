@@ -1,0 +1,30 @@
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - LOG_LEVEL=info
+    ports:
+      # Jaeger UI
+      - "8633:16686"
+      # OTLP receiver ports (OpenTelemetry)
+      - "8634:4317"   # OTLP gRPC
+      - "8635:4318"   # OTLP HTTP
+      # Legacy Jaeger ports (optional)
+      - "8636:6831/udp"  # Jaeger agent (thrift compact)
+      - "8637:6832/udp"  # Jaeger agent (thrift binary)
+      - "8638:5778"      # Jaeger agent (configs)
+      - "8639:14268"     # Jaeger collector (direct)
+      - "8640:9411"      # Zipkin compatible
+    volumes:
+      - jaeger-data:/tmp
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:16686/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  jaeger-data:

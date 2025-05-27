@@ -1,0 +1,23 @@
+services:
+  wppconnect:
+    image: wppconnect/server-cli:latest
+    container_name: wppconnect
+    ports:
+      - "8406:21465"
+    volumes:
+      - wppconnect-tokens:/usr/src/app/tokens
+      - wppconnect-config:/usr/src/app/config
+    environment:
+      - SERVER_PORT=21465
+      - SECRET_KEY=THISISMYSECRET
+      - HOST=http://localhost:8406
+      - WEBHOOK_URL=
+      - WEBHOOK_BY_EVENTS=false
+      - WEBHOOK_IGNORE_JIDS=false
+      - LOG_LEVEL=silly
+      - LOG_LOGGER=console,file
+    restart: unless-stopped
+
+volumes:
+  wppconnect-tokens:
+  wppconnect-config:

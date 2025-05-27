@@ -1,0 +1,37 @@
+services:
+  bookstack-db:
+    image: mysql:8.4
+    container_name: bookstack-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=bookstack_root
+      - MYSQL_DATABASE=bookstackapp
+      - MYSQL_USER=bookstack
+      - MYSQL_PASSWORD=bookstack_pass
+    volumes:
+      - bookstack-db:/var/lib/mysql
+    restart: unless-stopped
+
+  bookstack:
+    image: lscr.io/linuxserver/bookstack:latest
+    container_name: bookstack
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+      - APP_URL=http://localhost:8400
+      - DB_HOST=bookstack-db
+      - DB_PORT=3306
+      - DB_USER=bookstack
+      - DB_PASS=bookstack_pass
+      - DB_DATABASE=bookstackapp
+    volumes:
+      - bookstack-config:/config
+    ports:
+      - "8400:80"
+    restart: unless-stopped
+    depends_on:
+      - bookstack-db
+
+volumes:
+  bookstack-db:
+  bookstack-config:

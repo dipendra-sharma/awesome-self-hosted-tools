@@ -1,0 +1,78 @@
+# SigNoz - Open Source Datadog Alternative
+# Observability platform with metrics, traces, and logs
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.8-alpine
+    container_name: signoz-clickhouse
+    hostname: clickhouse
+    restart: on-failure
+    depends_on:
+      - zookeeper
+    volumes:
+      - signoz-clickhouse-data:/var/lib/clickhouse/
+    environment:
+      - CLICKHOUSE_USER=signoz
+      - CLICKHOUSE_PASSWORD=signoz_pass
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  zookeeper:
+    image: zookeeper:3.7
+    container_name: signoz-zookeeper
+    hostname: zookeeper
+    restart: on-failure
+    volumes:
+      - signoz-zookeeper-data:/datalog
+
+  otel-collector:
+    image: signoz/signoz-otel-collector:0.88.9
+    container_name: signoz-otel-collector
+    command: ["--config=/etc/otelcol-contrib/otelcol-config.yaml"]
+    restart: on-failure
+    depends_on:
+      - clickhouse
+    ports:
+      - "8629:4317"   # OTLP gRPC
+      - "8630:4318"   # OTLP HTTP
+    volumes:
+      - signoz-otel-config:/etc/otelcol-contrib
+
+  query-service:
+    image: signoz/query-service:0.39.0
+    container_name: signoz-query-service
+    restart: on-failure
+    depends_on:
+      - clickhouse
+    environment:
+      - ClickHouseUrl=tcp://clickhouse:9000
+      - ALERTMANAGER_API_PREFIX=http://alertmanager:9093/api/v1
+      - SIGNOZ_LOCAL_DB_PATH=/var/lib/signoz/signoz.db
+
+  alertmanager:
+    image: signoz/alertmanager:0.23.4-0.1
+    container_name: signoz-alertmanager
+    restart: on-failure
+    volumes:
+      - signoz-alertmanager-data:/data
+
+  frontend:
+    image: signoz/frontend:0.39.0
+    container_name: signoz-frontend
+    restart: on-failure
+    depends_on:
+      - alertmanager
+      - query-service
+    ports:
+      - "8631:3301"
+    volumes:
+      - signoz-frontend-config:/etc/nginx/conf.d
+
+volumes:
+  signoz-clickhouse-data:
+  signoz-zookeeper-data:
+  signoz-alertmanager-data:
+  signoz-otel-config:
+  signoz-frontend-config:

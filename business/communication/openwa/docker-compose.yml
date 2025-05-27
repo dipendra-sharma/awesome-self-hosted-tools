@@ -1,0 +1,21 @@
+services:
+  openwa:
+    image: openwa/wa-automate:latest
+    container_name: openwa
+    hostname: openwa
+    init: true
+    ports:
+      - "8408:8080"
+    volumes:
+      - openwa-sessions:/sessions
+    environment:
+      - WA_DISABLE_SPINS=true
+      - WA_SESSION_ID=MY_SESSION
+      - PORT=8080
+      - W_A_V=4.42.1
+      - WEBHOOK_URL=
+      - CONFIG_PATH=/sessions/config.json
+    restart: on-failure
+
+volumes:
+  openwa-sessions:

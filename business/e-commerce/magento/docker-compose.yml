@@ -1,0 +1,65 @@
+# Note: This is a simplified Magento setup for development
+# For production, use official Magento Docker images or Adobe Commerce Cloud
+
+services:
+  magento-db:
+    image: mysql:8.0
+    container_name: magento-db
+    environment:
+      MYSQL_ROOT_PASSWORD: magento_root
+      MYSQL_DATABASE: magento
+      MYSQL_USER: magento
+      MYSQL_PASSWORD: magento_pass
+    volumes:
+      - magento-db:/var/lib/mysql
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+
+  magento-elasticsearch:
+    image: elasticsearch:7.17.0
+    container_name: magento-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - magento-elasticsearch:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
+  magento-redis:
+    image: redis:alpine
+    container_name: magento-redis
+    restart: unless-stopped
+
+  magento:
+    image: bitnami/magento:latest
+    container_name: magento
+    ports:
+      - "8614:8080"
+      - "8615:8443"
+    depends_on:
+      - magento-db
+      - magento-elasticsearch
+      - magento-redis
+    environment:
+      - MAGENTO_HOST=localhost:8614
+      - MAGENTO_DATABASE_HOST=magento-db
+      - MAGENTO_DATABASE_PORT_NUMBER=3306
+      - MAGENTO_DATABASE_USER=magento
+      - MAGENTO_DATABASE_PASSWORD=magento_pass
+      - MAGENTO_DATABASE_NAME=magento
+      - MAGENTO_ELASTICSEARCH_HOST=magento-elasticsearch
+      - MAGENTO_ELASTICSEARCH_PORT_NUMBER=9200
+      - MAGENTO_ADMIN_USER=admin
+      - MAGENTO_ADMIN_PASSWORD=admin123
+      - MAGENTO_ADMIN_EMAIL=admin@magento.local
+      - MAGENTO_ADMIN_FIRST_NAME=Admin
+      - MAGENTO_ADMIN_LAST_NAME=User
+    volumes:
+      - magento-data:/bitnami/magento
+    restart: unless-stopped
+
+volumes:
+  magento-db:
+  magento-elasticsearch:
+  magento-data:

@@ -1,0 +1,113 @@
+services:
+  zammad-postgresql:
+    image: postgres:15-alpine
+    container_name: zammad-postgresql
+    restart: always
+    environment:
+      - POSTGRES_USER=zammad
+      - POSTGRES_PASSWORD=zammad_pass
+      - POSTGRES_DB=zammad
+    volumes:
+      - zammad-postgresql-data:/var/lib/postgresql/data
+
+  zammad-elasticsearch:
+    image: elasticsearch:8.8.1
+    container_name: zammad-elasticsearch
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+    volumes:
+      - zammad-elasticsearch-data:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  zammad-memcached:
+    image: memcached:alpine
+    container_name: zammad-memcached
+    restart: always
+    command: ["memcached", "-m", "256M"]
+
+  zammad-redis:
+    image: redis:alpine
+    container_name: zammad-redis
+    restart: always
+
+  zammad-railsserver:
+    image: zammad/zammad:latest
+    container_name: zammad-railsserver
+    command: ["zammad-railsserver"]
+    restart: always
+    depends_on:
+      - zammad-postgresql
+      - zammad-memcached
+      - zammad-redis
+    ports:
+      - "8641:3000"
+    environment:
+      - POSTGRESQL_HOST=zammad-postgresql
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_USER=zammad
+      - POSTGRESQL_PASS=zammad_pass
+      - POSTGRESQL_DB=zammad
+      - MEMCACHED_HOST=zammad-memcached
+      - MEMCACHED_PORT=11211
+      - REDIS_URL=redis://zammad-redis:6379
+      - ELASTICSEARCH_HOST=zammad-elasticsearch
+      - ELASTICSEARCH_PORT=9200
+    volumes:
+      - zammad-storage:/opt/zammad/storage
+
+  zammad-scheduler:
+    image: zammad/zammad:latest
+    container_name: zammad-scheduler
+    command: ["zammad-scheduler"]
+    restart: always
+    depends_on:
+      - zammad-postgresql
+      - zammad-memcached
+      - zammad-redis
+      - zammad-elasticsearch
+    environment:
+      - POSTGRESQL_HOST=zammad-postgresql
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_USER=zammad
+      - POSTGRESQL_PASS=zammad_pass
+      - POSTGRESQL_DB=zammad
+      - MEMCACHED_HOST=zammad-memcached
+      - MEMCACHED_PORT=11211
+      - REDIS_URL=redis://zammad-redis:6379
+      - ELASTICSEARCH_HOST=zammad-elasticsearch
+      - ELASTICSEARCH_PORT=9200
+    volumes:
+      - zammad-storage:/opt/zammad/storage
+
+  zammad-websocket:
+    image: zammad/zammad:latest
+    container_name: zammad-websocket
+    command: ["zammad-websocket"]
+    restart: always
+    depends_on:
+      - zammad-postgresql
+      - zammad-memcached
+      - zammad-redis
+    environment:
+      - POSTGRESQL_HOST=zammad-postgresql
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_USER=zammad
+      - POSTGRESQL_PASS=zammad_pass
+      - POSTGRESQL_DB=zammad
+      - MEMCACHED_HOST=zammad-memcached
+      - MEMCACHED_PORT=11211
+      - REDIS_URL=redis://zammad-redis:6379
+    volumes:
+      - zammad-storage:/opt/zammad/storage
+
+volumes:
+  zammad-postgresql-data:
+  zammad-elasticsearch-data:
+  zammad-storage:

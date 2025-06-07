@@ -11,7 +11,7 @@ All tools are production-ready, include latest 2024 versions, and come with comp
 
 ## 📋 Quick Index
 
-**Total Tools: 44** | **Categories: 24** | **Port Range: 8300-8641**
+**Total Tools: 44** | **Categories: 22** | **Port Range: 8300-8641**
 
 ## 🗂️ **Directory Structure**
 
@@ -263,7 +263,7 @@ Comprehensive business solution:
 ## 📊 Statistics
 
 - **Total Tools:** 44
-- **Categories:** 24
+- **Categories:** 22
 - **Docker Images:** Latest 2024 versions
 - **Database Systems:** PostgreSQL, MySQL, MariaDB, SQLite, Redis
 - **License Types:** MIT, GPL, AGPL, Apache 2.0

@@ -1,0 +1,33 @@
+services:
+  taiga-db:
+    image: postgres:15-alpine
+    container_name: taiga-db
+    environment:
+      POSTGRES_DB: taiga
+      POSTGRES_USER: taiga
+      POSTGRES_PASSWORD: taiga_pass
+    volumes:
+      - taiga-db:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  taiga:
+    image: ghcr.io/kaleidos-ventures/taiga-back:latest
+    container_name: taiga
+    depends_on:
+      - taiga-db
+    ports:
+      - "8524:8000"
+    environment:
+      TAIGA_SECRET_KEY: change_me
+      TAIGA_DB_NAME: taiga
+      TAIGA_DB_USER: taiga
+      TAIGA_DB_PASSWORD: taiga_pass
+      TAIGA_DB_HOST: taiga-db
+    volumes:
+      - taiga-media:/usr/src/taiga/back/media
+    restart: unless-stopped
+
+volumes:
+  taiga-db:
+  taiga-media:
+

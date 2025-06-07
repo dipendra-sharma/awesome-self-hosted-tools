@@ -1,0 +1,13 @@
+services:
+  mkdocs:
+    image: squidfunk/mkdocs-material:latest
+    container_name: mkdocs-material
+    ports:
+      - "8409:8000"
+    volumes:
+      - ./docs:/docs
+    command: mkdocs serve -a 0.0.0.0:8000
+    restart: unless-stopped
+
+volumes:
+  docs:

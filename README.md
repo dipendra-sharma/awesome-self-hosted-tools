@@ -5,19 +5,19 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://docker.com)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)](CONTRIBUTING.md)
 
-> A curated list of **49 awesome open-source, self-hosted tools** with ready-to-use Docker Compose configurations. Take control of your data and infrastructure with these free alternatives to popular SaaS services.
+> A curated list of **50 awesome open-source, self-hosted tools** with ready-to-use Docker Compose configurations. Take control of your data and infrastructure with these free alternatives to popular SaaS services.
 
 All tools are production-ready, include latest 2024 versions, and come with comprehensive documentation and setup instructions.
 
 ## 📋 Quick Index
 
-**Total Tools: 49** | **Categories: 22** | **Port Range: 8300-8641**
+**Total Tools: 50** | **Categories: 22** | **Port Range: 8300-8641**
 
 ## 🗂️ **Directory Structure**
 
 ```
 tools/
-├── development/           # 20 Development & Infrastructure Tools
+├── development/           # 21 Development & Infrastructure Tools
 │   ├── ci-cd/            # Jenkins
 │   ├── git-repositories/ # GitLab, Gitea
 │   ├── monitoring/       # Prometheus, Grafana, SigNoz, Sentry, Jaeger
@@ -27,7 +27,7 @@ tools/
 │   ├── security/         # Vaultwarden, Keycloak
 │   ├── messaging-streaming/ # Kafka
 │   ├── workflow-automation/ # Temporal, Huginn, n8n
-│   ├── documentation/    # BookStack
+│   ├── documentation/    # BookStack, MkDocs
 │   └── media-management/ # Jellyfin, PhotoPrism
 └── business/             # 29 Business & Marketing Tools
     ├── cms-publishing/   # WordPress, Ghost, Strapi, Drupal
@@ -45,7 +45,7 @@ tools/
 
 ---
 
-## 🔧 **Development & Infrastructure Tools (20)**
+## 🔧 **Development & Infrastructure Tools (21)**
 
 ### **CI/CD & Automation**
 | Tool | Location | Port(s) | Description |
@@ -104,6 +104,7 @@ tools/
 | Tool | Location | Port(s) | Description |
 |------|----------|---------|-------------|
 | **BookStack** | `development/documentation/bookstack/` | 8400 | Wiki-style documentation |
+| **MkDocs** | `development/documentation/mkdocs-material/` | 8409 | Static site generator with Material theme |
 
 ### **Media Management**
 | Tool | Location | Port(s) | Description |
@@ -229,7 +230,7 @@ Tools for software development:
 - GitLab/Gitea (Code Management)
 - Jenkins (CI/CD)
 - Prometheus + Grafana (Monitoring)
-- BookStack (Documentation)
+- BookStack or MkDocs (Documentation)
 - Nextcloud (File Sharing)
 
 ### **Marketing Agency**
@@ -267,7 +268,7 @@ Comprehensive business solution:
 
 ## 📊 Statistics
 
-- **Total Tools:** 49
+- **Total Tools:** 50
 - **Categories:** 24
 - **Docker Images:** Latest 2024 versions
 - **Database Systems:** PostgreSQL, MySQL, MariaDB, SQLite, Redis

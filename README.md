@@ -5,47 +5,47 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://docker.com)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)](CONTRIBUTING.md)
 
-> A curated list of **44 awesome open-source, self-hosted tools** with ready-to-use Docker Compose configurations. Take control of your data and infrastructure with these free alternatives to popular SaaS services.
+> A curated list of **49 awesome open-source, self-hosted tools** with ready-to-use Docker Compose configurations. Take control of your data and infrastructure with these free alternatives to popular SaaS services.
 
 All tools are production-ready, include latest 2024 versions, and come with comprehensive documentation and setup instructions.
 
 ## 📋 Quick Index
 
-**Total Tools: 44** | **Categories: 11** | **Port Range: 8300-8641**
+**Total Tools: 49** | **Categories: 11** | **Port Range: 8300-8641**
 
 ## 🗂️ **Directory Structure**
 
 ```
 tools/
-├── development/           # 19 Development & Infrastructure Tools
+├── development/           # 20 Development & Infrastructure Tools
 │   ├── ci-cd/            # Jenkins
 │   ├── git-repositories/ # GitLab, Gitea
 │   ├── monitoring/       # Prometheus, Grafana, SigNoz, Sentry, Jaeger
 │   ├── containers/       # Portainer
 │   ├── proxy-networking/ # Traefik
 │   ├── file-storage/     # Nextcloud
-│   ├── security/         # Vaultwarden
+│   ├── security/         # Vaultwarden, Keycloak
 │   ├── messaging-streaming/ # Kafka
 │   ├── workflow-automation/ # Temporal, Huginn, n8n
 │   ├── documentation/    # BookStack
 │   └── media-management/ # Jellyfin, PhotoPrism
-└── business/             # 25 Business & Marketing Tools
-    ├── cms-publishing/   # WordPress, Ghost, Strapi
+└── business/             # 29 Business & Marketing Tools
+    ├── cms-publishing/   # WordPress, Ghost, Strapi, Drupal
     ├── email-marketing/  # Mautic, Listmonk, SendPortal, Mailcow
     ├── customer-support/ # Chatwoot, FreeScout, Zammad
     ├── crm-database/     # NocoDB
     ├── social-media/     # Postiz, Socioboard
     ├── seo-automation/   # SerpBear, Serposcope
     ├── forums-community/ # Discourse
-    ├── e-commerce/       # Magento
-    ├── analytics/        # PostHog, Umami, Matomo, Metabase
-    ├── project-management/ # Focalboard
+    ├── e-commerce/       # Magento, Saleor
+    ├── analytics/        # PostHog, Umami, Matomo, Metabase, Superset
+    ├── project-management/ # Focalboard, Taiga
     └── communication/    # WPPConnect, PlaySMS, OpenWA
 ```
 
 ---
 
-## 🔧 **Development & Infrastructure Tools (19)**
+## 🔧 **Development & Infrastructure Tools (20)**
 
 ### **CI/CD & Automation**
 | Tool | Location | Port(s) | Description |
@@ -86,6 +86,7 @@ tools/
 | Tool | Location | Port(s) | Description |
 |------|----------|---------|-------------|
 | **Vaultwarden** | `development/security/vaultwarden/` | 8606 | Password manager |
+| **Keycloak** | `development/security/keycloak/` | 8525 | Identity and access management |
 
 ### **Messaging & Streaming**
 | Tool | Location | Port(s) | Description |
@@ -112,7 +113,7 @@ tools/
 
 ---
 
-## 💼 **Business & Marketing Tools (25)**
+## 💼 **Business & Marketing Tools (29)**
 
 ### **CMS & Publishing**
 | Tool | Location | Port(s) | Description |
@@ -120,6 +121,7 @@ tools/
 | **WordPress** | `business/cms-publishing/wordpress/` | 8500 | World's most popular CMS |
 | **Ghost** | `business/cms-publishing/ghost/` | 8501 | Modern publishing platform |
 | **Strapi** | `business/cms-publishing/strapi/` | 8627 | Headless CMS |
+| **Drupal** | `business/cms-publishing/drupal/` | 8521 | Flexible CMS |
 
 ### **Email Marketing & Server**
 | Tool | Location | Port(s) | Description |
@@ -162,6 +164,7 @@ tools/
 | Tool | Location | Port(s) | Description |
 |------|----------|---------|-------------|
 | **Magento** | `business/e-commerce/magento/` | 8614-8615 | Enterprise e-commerce |
+| **Saleor** | `business/e-commerce/saleor/` | 8522 | Modern GraphQL commerce |
 
 ### **Analytics & Intelligence**
 | Tool | Location | Port(s) | Description |
@@ -170,11 +173,13 @@ tools/
 | **Umami** | `business/analytics/umami/` | 8520 | Privacy-focused web analytics |
 | **Matomo** | `business/analytics/matomo/` | Existing | Web analytics |
 | **Metabase** | `business/analytics/metabase/` | Existing | Business intelligence |
+| **Superset** | `business/analytics/superset/` | 8523 | Data visualization platform |
 
 ### **Project Management**
 | Tool | Location | Port(s) | Description |
 |------|----------|---------|-------------|
 | **Focalboard** | `business/project-management/focalboard/` | 8401 | Kanban boards |
+| **Taiga** | `business/project-management/taiga/` | 8524 | Agile project management |
 
 ### **Communication & Messaging**
 | Tool | Location | Port(s) | Description |
@@ -262,7 +267,7 @@ Comprehensive business solution:
 
 ## 📊 Statistics
 
-- **Total Tools:** 44
+- **Total Tools:** 49
 - **Categories:** 24
 - **Docker Images:** Latest 2024 versions
 - **Database Systems:** PostgreSQL, MySQL, MariaDB, SQLite, Redis

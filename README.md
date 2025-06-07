@@ -11,7 +11,7 @@ All tools are production-ready, include latest 2024 versions, and come with comp
 
 ## 📋 Quick Index
 
-**Total Tools: 44** | **Categories: 11** | **Port Range: 8300-8641**
+**Total Tools: 44** | **Categories: 24** | **Port Range: 8300-8641**
 
 ## 🗂️ **Directory Structure**
 
@@ -168,8 +168,8 @@ tools/
 |------|----------|---------|-------------|
 | **PostHog** | `business/analytics/posthog/` | 8519 | Product analytics |
 | **Umami** | `business/analytics/umami/` | 8520 | Privacy-focused web analytics |
-| **Matomo** | `business/analytics/matomo/` | Existing | Web analytics |
-| **Metabase** | `business/analytics/metabase/` | Existing | Business intelligence |
+| **Matomo** | `business/analytics/matomo/` | 8306 | Web analytics |
+| **Metabase** | `business/analytics/metabase/` | 8305 | Business intelligence |
 
 ### **Project Management**
 | Tool | Location | Port(s) | Description |
@@ -189,7 +189,7 @@ tools/
 
 ### Prerequisites
 - Docker & Docker Compose installed
-- Ports 8300-8628 available
+- Ports 8300-8641 available
 - At least 4GB RAM recommended
 
 ### Launch Any Tool
